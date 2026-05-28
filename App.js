@@ -1,20 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useContext } from 'react'
+import { StatusBar } from 'expo-status-bar'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { AuthProvider, AuthContext } from './src/context/AuthContext'
+import { WebSocketProvider } from './src/context/WebSocketContext'
+import AppNavigation from './src/navigation/AppNavigation'
+import NotificacionesGlobales from './src/components/NotificacionesGlobales'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+function Contenido() {
+    const { usuario } = useContext(AuthContext)
+    return (
+        <>
+            <AppNavigation />
+            {usuario && <NotificacionesGlobales />}
+            <StatusBar style="light" />
+        </>
+    )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+    return (
+        <SafeAreaProvider>
+            <AuthProvider>
+                <WebSocketProvider>
+                    <Contenido />
+                </WebSocketProvider>
+            </AuthProvider>
+        </SafeAreaProvider>
+    )
+}
