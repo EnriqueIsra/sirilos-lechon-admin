@@ -122,7 +122,7 @@ export default function CatalogoScreen({ navigation }) {
             {item.imagenUrl ? (
                 <Image
                     source={{ uri: item.imagenUrl }}
-                    style={{ width: '100%', height: 160, borderRadius: 8, marginBottom: 8 }}
+                    style={{ width: '100%', height: 350, borderRadius: 8, marginBottom: 8 }}
                     resizeMode="cover"
                 />
             ) : null}
@@ -416,7 +416,7 @@ function ProductoModal({ producto, onClose, onSubmit }) {
                                 <TouchableOpacity onPress={() => setImagenFullscreen(true)}>
                                     <Image
                                         source={{ uri: imagenUrl }}
-                                        style={{ width: '100%', height: 220, borderRadius: 10, marginTop: 10 }}
+                                        style={{ width: '100%', height: 350, borderRadius: 10, marginTop: 10 }}
                                         resizeMode="cover"
                                     />
                                     <Text style={{ textAlign: 'center', color: COLORS.primary, fontSize: 12, marginTop: 4 }}>
