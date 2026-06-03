@@ -300,39 +300,53 @@ function ProductoModal({ producto, onClose, onSubmit }) {
     const esNuevo = !producto.id
 
     const seleccionarImagen = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
         if (status !== 'granted') {
-            Alert.alert('Permiso denegado', 'Necesitas permitir acceso a la galería')
-            return
+            Alert.alert(
+                'Permiso denegado',
+                'Necesitas permitir acceso a la galería'
+            );
+            return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaType.images,
-            quality: 0.8,
-        })
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                quality: 0.8,
+            });
 
-        if (!result.canceled && result.assets[0]) {
-            const asset = result.assets[0]
-            const formData = new FormData()
+            if (result.canceled || !result.assets?.[0]) {
+                return;
+            }
+
+            const asset = result.assets[0];
+
+            const formData = new FormData();
+
             formData.append('imagen', {
                 uri: asset.uri,
-                type: 'image/jpeg',
-                name: 'imagen.jpg',
-            })
-            try {
-                const response = await api.post('/admin/imagenes/subir', formData, {
+                type: asset.mimeType || 'image/jpeg',
+                name: asset.fileName || 'imagen.jpg',
+            });
+
+            const response = await api.post(
+                '/admin/imagenes/subir',
+                formData,
+                {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${await AsyncStorage.getItem('token')}`
                     }
-                })
-                setImagenUrl(response.data.url)
-            } catch (e) {
-                console.error('Error subiendo imagen:', e.response?.data || e.message)
-                Alert.alert('Error', e.response?.data?.message || e.message || 'No se pudo subir la imagen')
-            }
+                }
+            );
+
+            setImagenUrl(response.data.url);
+
+        } catch (e) {
+            console.error('Error subiendo imagen:', e);
+            Alert.alert('Error', 'No se pudo subir la imagen');
         }
-    }
+    };
 
     return (
         <Modal visible={!!producto} animationType="slide" transparent onRequestClose={onClose}>
